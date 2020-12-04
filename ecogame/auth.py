@@ -29,7 +29,7 @@ def register():
 
         if error is None:
             new_user(username, password)
-            return {'Registration': 'Succes'}
+            return {'Registration': 'Success'}
 
         return {'Error': error}
 
@@ -65,7 +65,7 @@ def login():
             user_items = ', '.join(get_user_items(session['user_id']))
 
             return {
-                "Bonus": "Recieved {} credits".format(bonus),
+                "Bonus": "Received {} credits".format(bonus),
                 "Credits": get_user_credits(session['user_id']),
                 "Items": user_items
             }
