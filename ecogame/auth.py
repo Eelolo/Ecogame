@@ -1,3 +1,4 @@
+import functools
 from flask import (Blueprint, g, request, session)
 from werkzeug.security import check_password_hash
 from ecogame.db import get_db
@@ -28,7 +29,7 @@ def register():
 
         if error is None:
             new_user(username, password)
-            return {'Registration': 'Success'}
+            return {'Registration': 'Succes'}
 
         return {'Error': error}
 
@@ -64,12 +65,24 @@ def login():
             user_items = ', '.join(get_user_items(session['user_id']))
 
             return {
-                "Bonus": "Received {} credits".format(bonus),
+                "Bonus": "Recieved {} credits".format(bonus),
                 "Credits": get_user_credits(session['user_id']),
                 "Items": user_items
             }
 
         return {'Error': error}
+
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = get_db().execute(
+            'SELECT * FROM users WHERE user_id = ?', (user_id,)
+        ).fetchone()
 
 
 @bp.route('/logout')
@@ -81,3 +94,14 @@ def logout():
     else:
         session.clear()
         return {'Message': 'Good Bye.'}
+
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return {'Error': 'Please log in.'}
+
+        return view(**kwargs)
+
+    return wrapped_view
