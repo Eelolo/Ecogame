@@ -70,3 +70,14 @@ def login():
             }
 
         return {'Error': error}
+
+
+@bp.route('/logout')
+def logout():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        return {'Error': 'You are not logged in.'}
+    else:
+        session.clear()
+        return {'Message': 'Good Bye.'}
