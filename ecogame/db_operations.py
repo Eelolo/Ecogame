@@ -22,10 +22,10 @@ def new_user(username, password):
 def get_user_credits(user_id):
     db = get_db()
 
-    kredits = db.execute(
+    user_credits = db.execute(
         'SELECT credits FROM users WHERE user_id = ?', (user_id,)
     ).fetchone()[0]
-    return kredits
+    return user_credits
 
 
 def add_credits(user_id, integer):
@@ -34,6 +34,16 @@ def add_credits(user_id, integer):
     db.execute(
         'UPDATE users SET credits = ? WHERE user_id = ?',
         (get_user_credits(user_id) + integer, user_id)
+    )
+    db.commit()
+
+
+def subtract_credits(user_id, integer):
+    db = get_db()
+
+    db.execute(
+        'UPDATE users SET credits = ? WHERE user_id = ?',
+        (get_user_credits(user_id) - integer, user_id)
     )
     db.commit()
 
@@ -56,3 +66,13 @@ def get_user_items(user_id):
     user_items = fetchall_to_list(user_items)
 
     return user_items
+
+
+def add_item(user_id, item_id):
+    db = get_db()
+
+    db.execute(
+        'INSERT INTO user_items (user_id, item_id) VALUES (?, ?)',
+        (user_id, item_id)
+    )
+    db.commit()
