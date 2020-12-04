@@ -25,10 +25,11 @@ cp .env-example .env
 ### Reset/Create database:
 Run from `${project_root}: 
 ```
+export FLASK_APP=ecogame
 flask reset-db
 ```
 ### Start the server:
-Run from `${project_root}: 
+Run from `${project_root}/ecogame: 
 ```
 flask run
 ```
