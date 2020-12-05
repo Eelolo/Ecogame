@@ -1,7 +1,7 @@
 import requests
 
-is_logged_in = False
-session_cookies = None
+logged_in = False
+cookie = None
 
 
 def json_printer(json):
@@ -19,63 +19,74 @@ def register():
     json_printer(response.json())
 
 
-def login(session_cookies, is_logged_in):
+def login(cookie, logged_in):
     auth_data = {
         "username": input('Username: '),
         "password": input('Password: ')
         }
 
-    if not is_logged_in:
+    if not logged_in:
         response = requests.post('http://127.0.0.1:8000/auth/login', json=auth_data)
         if 'Set-Cookie' in response.headers:
-            session_cookies = response.headers['Set-Cookie']
+            cookie = response.headers['Set-Cookie']
     else:
-        response = requests.post('http://127.0.0.1:8000/auth/login', json=auth_data, cookies=session_cookies)
+        response = requests.post('http://127.0.0.1:8000/auth/login', json=auth_data, cookies=cookie)
 
     json_printer(response.json())
 
-    return session_cookies
+    return cookie
 
 
-def logout(session_cookies):
-    if session_cookies is not None:
-        response = requests.get('http://127.0.0.1:8000/auth/logout', cookies=session_cookies)
+def logout(cookie):
+    if cookie is not None:
+        response = requests.get('http://127.0.0.1:8000/auth/logout', cookies=cookie)
     else:
         response = requests.get('http://127.0.0.1:8000/auth/logout')
 
     json_printer(response.json())
 
 
-def user_info(session_cookies):
-    if session_cookies is not None:
-        response = requests.get('http://127.0.0.1:8000/market/user_info', cookies=session_cookies)
+def user_info(cookie):
+    if cookie is not None:
+        response = requests.get('http://127.0.0.1:8000/market/user_info', cookies=cookie)
     else:
         response = requests.get('http://127.0.0.1:8000/market/user_info')
 
     json_printer(response.json())
 
 
+def items(cookie):
+    if cookie is not None:
+        response = requests.get('http://127.0.0.1:8000/market/', cookies=cookie)
+    else:
+        response = requests.get('http://127.0.0.1:8000/market/')
+
+    json_printer(response.json())
+
+
 while True:
-    print('\nCommands:', 'register', 'login', 'info', 'logout', sep='\n')
+    print('\nCommands:', 'register', 'login', 'info', 'items', 'logout', sep='\n')
 
     client_command = input('\n')
 
     if client_command == 'register':
         register()
     elif client_command == 'login':
-        if is_logged_in:
-            login(session_cookies, is_logged_in)
+        if logged_in:
+            login(cookie, logged_in)
         else:
-            session_cookies = login(None, is_logged_in)
-            if session_cookies is not None:
-                session_cookies = {'session': session_cookies.split('=')[1].split(';')[0]}
-                is_logged_in = True
+            cookie = login(None, logged_in)
+            if cookie is not None:
+                cookie = {'session': cookie.split('=')[1].split(';')[0]}
+                logged_in = True
     elif client_command == 'info':
-        user_info(session_cookies)
+        user_info(cookie)
+    elif client_command == 'items':
+        items(cookie)
     elif client_command == 'logout':
-        logout(session_cookies)
-        is_logged_in = False
-        session_cookies = None
+        logout(cookie)
+        logged_in = False
+        cookie = None
     elif client_command == 'exit':
         exit()
     else:
