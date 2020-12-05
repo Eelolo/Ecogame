@@ -46,8 +46,17 @@ def logout(session_cookies):
     json_printer(response.json())
 
 
+def user_info(session_cookies):
+    if session_cookies is not None:
+        response = requests.get('http://127.0.0.1:8000/market/user_info', cookies=session_cookies)
+    else:
+        response = requests.get('http://127.0.0.1:8000/market/user_info')
+
+    json_printer(response.json())
+
+
 while True:
-    print('\nCommands:', 'register', 'login', 'logout', sep='\n')
+    print('\nCommands:', 'register', 'login', 'info', 'logout', sep='\n')
 
     client_command = input('\n')
 
@@ -61,6 +70,8 @@ while True:
             if session_cookies is not None:
                 session_cookies = {'session': session_cookies.split('=')[1].split(';')[0]}
                 is_logged_in = True
+    elif client_command == 'info':
+        user_info(session_cookies)
     elif client_command == 'logout':
         logout(session_cookies)
         is_logged_in = False
