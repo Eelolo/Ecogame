@@ -1,7 +1,7 @@
 from flask import Blueprint, session
-from ecogame.auth import login_required
-from ecogame.db import get_db
-from ecogame.db_operations import (
+from .auth import login_required
+from .db import get_db
+from .db_operations import (
     get_user_credits, get_user_items, add_item, subtract_credits, add_credits, delete_last_purchased_item
 )
 
