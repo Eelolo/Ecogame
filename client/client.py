@@ -75,8 +75,20 @@ def buy_item(cookie):
     json_printer(response.json())
 
 
+def sell_item(cookie):
+    item = input('Item: ')
+
+    if cookie is not None:
+        response = requests.get('http://127.0.0.1:8000/market/sell/{}'.format(item), cookies=cookie)
+    else:
+        response = requests.get('http://127.0.0.1:8000/market/sell/{}'.format(item))
+
+    json_printer(response.json())
+
+
 while True:
-    print('\nCommands:', 'register', 'login', 'info', 'items', 'buy_item', 'logout', sep='\n')
+    print('\nCommands:', 'register', 'login', 'info', 'items',
+          'buy_item', 'sell_item', 'logout', 'exit', sep='\n')
 
     client_command = input('\n')
 
@@ -96,6 +108,8 @@ while True:
         items(cookie)
     elif client_command == 'buy_item':
         buy_item(cookie)
+    elif client_command == 'sell_item':
+        sell_item(cookie)
     elif client_command == 'logout':
         logout(cookie)
         logged_in = False
