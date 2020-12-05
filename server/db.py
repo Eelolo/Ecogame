@@ -31,7 +31,7 @@ def reset_db():
     with current_app.open_resource('scheme.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
-    with open('ecogame/items.csv', newline='', encoding='utf-8') as csvfile:
+    with open('items.csv', newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
         for row in reader:
             db.execute(
