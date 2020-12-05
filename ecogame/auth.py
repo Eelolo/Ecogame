@@ -29,9 +29,19 @@ def register():
 
         if error is None:
             new_user(username, password)
-            return {'Registration': 'Succes'}
+            return {
+                    'data': {
+                        'code': 200,
+                        'message': 'Registration Success'
+                        }
+                    }
 
-        return {'Error': error}
+        return {
+                'Error': {
+                    'code': 400,
+                    'error_message': error
+                    }
+                }
 
 
 @bp.route('/login', methods=('GET', 'POST'))
@@ -65,12 +75,19 @@ def login():
             user_items = ', '.join(get_user_items(session['user_id']))
 
             return {
-                "Bonus": "Recieved {} credits".format(bonus),
-                "Credits": get_user_credits(session['user_id']),
-                "Items": user_items
-            }
-
-        return {'Error': error}
+                    'data': {
+                        'code': 200,
+                        "Bonus": "Received {} credits".format(bonus),
+                        "Credits": get_user_credits(session['user_id']),
+                        "Items": user_items
+                        }
+                    }
+        return {
+                'Error': {
+                    'code': 400,
+                    'error_message': error
+                    }
+                }
 
 
 @bp.before_app_request
@@ -90,17 +107,32 @@ def logout():
     user_id = session.get('user_id')
 
     if user_id is None:
-        return {'Error': 'You are not logged in.'}
+        return {
+                'Error': {
+                    'code': 401,
+                    'error_message': 'You are not logged in.'
+                    }
+                }
     else:
         session.clear()
-        return {'Message': 'Good Bye.'}
+        return {
+                'data': {
+                    'code': 200,
+                    'Message': 'Good Bye.'
+                    }
+                }
 
 
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return {'Error': 'Please log in.'}
+            return {
+                    'Error': {
+                        'code': 401,
+                        'error_message': 'Please log in.'
+                        }
+                    }
 
         return view(**kwargs)
 
