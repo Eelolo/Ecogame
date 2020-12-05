@@ -14,7 +14,14 @@ def info():
     user_credits = get_user_credits(session['user_id'])
     user_items = get_user_items(session['user_id'])
 
-    return {'Credits': user_credits, 'Items': user_items}
+    return {
+            'data': {
+                'code': 200,
+                'message': 'user_info',
+                'Credits': user_credits,
+                'Items': user_items
+                }
+            }
 
 
 @bp.route('/')
@@ -24,13 +31,20 @@ def items():
     user_items = dict(db.execute(
         'SELECT name, price FROM items'
     ).fetchall())
-    response = {}
+    items_info = {}
     items_list = []
     for item in user_items:
         items_list.append([item, user_items[item]])
     for idx in range(len(items_list)):
-        response[idx+1] = items_list[idx]
-    return response
+        items_info[idx+1] = items_list[idx]
+
+    return {
+            'data': {
+                'code': 200,
+                'message': 'items info',
+                'items info': items_info
+                }
+            }
 
 
 @bp.route('/buy/<int:item_id>')
@@ -42,7 +56,12 @@ def buy_item(item_id):
             'SELECT price FROM items WHERE item_id = ?', (item_id,)
         ).fetchone()[0]
     except TypeError:
-        return 'Incorrect item_id.'
+        return {
+                'error': {
+                    'code': 400,
+                    'error_message': 'Incorrect item_id.'
+                    }
+                }
 
     user_credits = get_user_credits(session['user_id'])
 
@@ -53,9 +72,19 @@ def buy_item(item_id):
             add_item(session['user_id'], item_id)
             subtract_credits(session['user_id'], price)
         else:
-            return {'message': 'Not enough credits.'}
+            return {
+                    'error': {
+                        'code': 403,
+                        'error_message': 'Not enough credits.'
+                        }
+                    }
 
-    return {'message': 'Item purchased.'}
+    return {
+            'data': {
+                'code': 200,
+                'message': 'Item purchased.'
+                }
+            }
 
 
 @bp.route('/sell/<int:item_id>')
@@ -68,11 +97,24 @@ def sell_item(item_id):
             'SELECT price FROM items WHERE item_id = ?', (item_id,)
         ).fetchone()[0]
     except TypeError:
-        return 'Incorrect item_id.'
-
+        return {'error': {
+                    'code': 400,
+                    'error_message': 'Incorrect item_id.'
+                    }
+                }
     add_credits(session['user_id'], price)
 
     if delete_last_purchased_item(session['user_id'], item_id) == 0:
-        return {'message': 'There is no such item.'}
+        return {
+                'error': {
+                    'code': 403,
+                    'error_message': 'There is no such item.'
+                    }
+                }
 
-    return {'message': 'Item sold.'}
+    return {
+            'data': {
+                'code': 200,
+                'message': 'Item sold.'
+                }
+            }
