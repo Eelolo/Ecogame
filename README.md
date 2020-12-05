@@ -6,6 +6,7 @@ Small system that represents economy game
 python3 -m venv venv
 ```
 ### Activate it
+Run from `${project_root}:
 ```
 . venv/bin/activate
 ```
@@ -14,6 +15,7 @@ python3 -m venv venv
 deactivate
 ```
 ### Install dependencies
+Run from `${project_root}:
 ```
 pip install -r requirements.txt
 ```
@@ -23,12 +25,12 @@ pip install -r requirements.txt
 cp .env-example .env
 ```
 ### Reset/Create database:
-Run from `${project_root}: 
+Run from `${project_root}/server: 
 ```
 flask reset-db
 ```
 ### Start the server:
-Run from `${project_root}: 
+Run from `${project_root}/server: 
 ```
 flask run
 ```
