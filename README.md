@@ -23,12 +23,12 @@ pip install -r requirements.txt
 cp .env-example .env
 ```
 ### Reset/Create database:
-Run from `${project_root}: 
+Run from `${project_root}/server: 
 ```
 flask reset-db
 ```
 ### Start the server:
-Run from `${project_root}: 
+Run from `${project_root}/server: 
 ```
 flask run
 ```
