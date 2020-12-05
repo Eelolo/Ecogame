@@ -1,4 +1,4 @@
-from ecogame.db import get_db
+from .db import get_db
 from werkzeug.security import generate_password_hash
 
 
