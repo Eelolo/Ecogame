@@ -1,9 +1,9 @@
 import functools
 from flask import (Blueprint, g, request, session)
 from werkzeug.security import check_password_hash
-from ecogame.db import get_db
+from .db import get_db
 from random import randint
-from ecogame.db_operations import (
+from .db_operations import (
     new_user, add_credits, get_user_credits, get_user_items
 )
 
